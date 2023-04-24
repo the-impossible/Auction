@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}Homepage{% endblock title %}
+
+{% block head %}{% include 'partials/head.html' %}{% endblock head %}
+
+  {% block body %}
+
+    <!-- ===============================================-->
+    <!--    Main Content-->
+    <!-- ===============================================-->
+    <main class="main" id="top">
+
+      {% block nav %} {% include 'partials/nav.html' %} {% endblock %}
+
+      <section class="pt-7">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-md-6 text-md-start text-center py-6">
+              <h1 class="mb-4 fs-9 fw-bold">Best Place to Auction Furnitures</h1>
+              <p class="mb-6 lead text-secondary">We provide a safe and secured auctioning process<br class="d-none d-xl-block" />all in one place! The most intuitive way to acquire<br class="d-none d-xl-block" />your next furniture.</p>
+              <div class="text-center text-md-start">
+                <a class="btn btn-warning me-3 btn-lg" href="#!" role="button">Get started</a>
+              </div>
+            </div>
+            <div class="col-md-6 text-end"><img class="pt-7 pt-md-0 img-fluid" src="{% static 'frontend/assets/img/hero/hero-img.png' %}" alt="" /></div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ============================================-->
+      <!-- <section> begin ============================-->
+      <section class="pt-5 pt-md-9 mb-6" id="feature">
+
+        <div class="bg-holder z-index--1 bottom-0 d-none d-lg-block" style="background-image:url({% static 'frontend/assets/img/category/shape.png' %});opacity:.5;">
+        </div>
+        <!--/.bg-holder-->
+
+        <div class="container">
+          <h1 class="fs-9 fw-bold mb-4 text-center"> Powered Features</h1>
+          <div class="row">
+            <div class="col-lg-3 col-sm-6 mb-2"> <img class="mb-3 ms-n3" src="{% static 'frontend/assets/img/category/icon1.png' %}" width="75" alt="Feature" />
+              <h4 class="mb-3">Great UI/UX experience</h4>
+              <p class="mb-0 fw-medium text-secondary">Good user interface and user experience,</p>
+            </div>
+            <div class="col-lg-3 col-sm-6 mb-2"> <img class="mb-3 ms-n3" src="{% static 'frontend/assets/img/category/icon2.png' %}" width="75" alt="Feature" />
+              <h4 class="mb-3">Highly Secured</h4>
+              <p class="mb-0 fw-medium text-secondary">Your informations are safe with us</p>
+            </div>
+            <div class="col-lg-3 col-sm-6 mb-2"> <img class="mb-3 ms-n3" src="{% static 'frontend/assets/img/category/icon3.png' %}" width="75" alt="Feature" />
+              <h4 class="mb-3">High-end Performance</h4>
+              <p class="mb-0 fw-medium text-secondary">Great in terms of speed.</p>
+            </div>
+            <div class="col-lg-3 col-sm-6 mb-2"> <img class="mb-3 ms-n3" src="{% static 'frontend/assets/img/category/icon4.png' %}" width="75" alt="Feature" />
+              <h4 class="mb-3">Secured Payment Gateway</h4>
+              <p class="mb-0 fw-medium text-secondary">Our payment option is top-notch.</p>
+            </div>
+          </div>
+          <div class="text-center"><a class="btn btn-warning mt-5" href="#!" role="button">SIGN UP NOW</a></div>
+        </div><!-- end of .container-->
+
+      </section>
+      <!-- <section> close ============================-->
+      <!-- ============================================-->
+
+
+      <!-- ============================================-->
+      <!-- <section> begin ============================-->
+      <section class="py-md-11 py-8" id="superhero">
+
+        <div class="bg-holder z-index--1 bottom-0 d-none d-lg-block background-position-top" style="background-image:url({% static 'frontend/assets/img/superhero/oval.png' %});opacity:.5; background-position: top !important ;">
+        </div>
+        <!--/.bg-holder-->
+
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+              <h1 class="fw-bold mb-4 fs-7">Need a furniture?</h1>
+              <p class="mb-5 text-info fw-medium">Do you wish to acquire some furniture?<br />Sign in to view furniture available </p>
+              <button class="btn btn-warning btn-md">Sign In</button>
+            </div>
+          </div>
+        </div><!-- end of .container-->
+
+      </section>
+      <!-- <section> close ============================-->
+      <!-- ============================================-->
+
+
+    {% block footer %}{% include 'partials/footer.html' %}{% endblock footer %}
+
+    </main>
+    <!-- ===============================================-->
+    <!--    End of Main Content-->
+    <!-- ===============================================-->
+
+    {% block script %}{% include 'partials/script.html' %}{% endblock script %}
+
+  {% endblock body %}
+
+</html>
