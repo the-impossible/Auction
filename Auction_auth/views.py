@@ -8,3 +8,6 @@ from django.contrib.messages.views import SuccessMessageMixin
 
 class HomePageView(TemplateView):
     template_name = "frontend/index.html"
+
+class DashboardPageView(TemplateView):
+    template_name = "backend/dashboard.html"

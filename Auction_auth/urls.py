@@ -5,5 +5,6 @@ from Auction_auth.views import *
 app_name = "auth"
 
 urlpatterns = [
-    path('', HomePageView.as_view(), name='home')
+    path('', HomePageView.as_view(), name='home'),
+    path('dashboard', DashboardPageView.as_view(), name='dashboard')
 ]
