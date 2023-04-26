@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Login{% endblock title %}
+
+  {% block head %}{% include 'partials/auth_head.html' %}{% endblock head %}
+
+  {% block body %}
+
+  <body data-open="click" data-menu="vertical-menu" data-col="1-column" class="vertical-layout vertical-menu 1-column  blank-page blank-page">
+    <!-- ////////////////////////////////////////////////////////////////////////////-->
+    <div class="app-content content container-fluid">
+      <div class="content-wrapper">
+        <div class="content-header row">
+        </div>
+        <div class="content-body"><section class="flexbox-container">
+    <div class="col-md-4 offset-md-4 col-xs-10 offset-xs-1 box-shadow-2 p-0">
+		<div class="card border-grey border-lighten-3 px-2 py-2 m-0">
+			<div class="card-header no-border">
+				<div class="card-title text-xs-center">
+					<img src="{% static 'backend/app-assets/images/logo/robust-logo-light.png' %}" alt="branding logo">
+				</div>
+				<h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2"><span>Create Account</span></h6>
+			</div>
+			<div class="card-body collapse in">
+				<div class="card-block">
+					<form class="form-horizontal form-simple" method="POST">
+            {% csrf_token %}
+
+						<fieldset class="form-group position-relative has-icon-left mb-1">
+              {{ form.name }}
+							<div class="form-control-position">
+							    <i class="icon-head"></i>
+							</div>
+              {% if form.name.errors %}
+                <div class="alert alert-danger mt-2" role="alert">
+                  {{ form.name.errors }}
+                </div>
+              {% endif %}
+						</fieldset>
+
+						<fieldset class="form-group position-relative has-icon-left mb-1">
+              {{ form.phone }}
+							<div class="form-control-position">
+                <i class="icon-ios-telephone"></i>
+							</div>
+              {% if form.phone.errors %}
+                <div class="alert alert-danger mt-2" role="alert">
+                  {{ form.phone.errors }}
+                </div>
+              {% endif %}
+						</fieldset>
+
+						<fieldset class="form-group position-relative has-icon-left mb-1">
+              {{ form.email }}
+							<div class="form-control-position">
+							    <i class="icon-mail6"></i>
+							</div>
+              {% if form.email.errors %}
+                <div class="alert alert-danger mt-2" role="alert">
+                  {{ form.email.errors }}
+                </div>
+              {% endif %}
+						</fieldset>
+
+						<fieldset class="form-group position-relative has-icon-left">
+              {{ form.password }}
+							<div class="form-control-position">
+							    <i class="icon-key3"></i>
+							</div>
+              {% if form.password.errors %}
+                <div class="alert alert-danger mt-2" role="alert">
+                  {{ form.password.errors }}
+                </div>
+              {% endif %}
+						</fieldset>
+						<button type="submit" class="btn btn-primary btn-lg btn-block"><i class="icon-unlock2"></i> Register</button>
+					</form>
+				</div>
+				<p class="text-xs-center">Already have an account ? <a href="{% url 'auth:login' %}" class="card-link">Login</a></p>
+			</div>
+		</div>
+	</div>
+</section>
+        </div>
+      </div>
+    </div>
+
+    {% block script %}{% include 'partials/auth_script.html' %}{% endblock script %}
+</body>
+{% endblock body %}

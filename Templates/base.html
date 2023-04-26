@@ -4,11 +4,10 @@
 		<title>Auction | {% block title %} {% endblock %}</title>
     	{% block head %} {% endblock %}
 	</head>
-	<body data-open="click" data-menu="vertical-menu" data-col="2-columns" class="vertical-layout vertical-menu 2-columns  fixed-navbar">
-		{% block body %}
-			{% block nav %} {% endblock %}
-			{% block footer %} {% endblock %}
-			{% block script %} {% endblock %}
-		{% endblock %}
+	{% block body %}
+		{% block nav %} {% endblock %}
+		{% block footer %} {% endblock %}
+		{% block script %} {% endblock %}
+	{% endblock %}
 	</body>
 </html>
