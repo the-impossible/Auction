@@ -6,10 +6,12 @@ from datetime import datetime
 # My app imports
 
 # Create your models here.
+
+
 class UserManager(BaseUserManager):
     def create_user(self, email, name, password=None):
 
-        #creates a user with the parameters
+        # creates a user with the parameters
         if email is None:
             raise ValueError('Email address is required!')
 
@@ -20,8 +22,8 @@ class UserManager(BaseUserManager):
             raise ValueError('Password is required!')
 
         user = self.model(
-            email = self.normalize_email(email),
-            name = name.title().strip(),
+            email=self.normalize_email(email),
+            name=name.title().strip(),
         )
 
         user.set_password(password)
@@ -45,16 +47,24 @@ class UserManager(BaseUserManager):
 
         return user
 
-class User(AbstractBaseUser, PermissionsMixin):
-    user_id = models.UUIDField(default=uuid.uuid4, primary_key=True, unique=True, editable=False)
-    email = models.CharField(max_length=100, db_index=True, unique=True, verbose_name='email address', blank=True)
-    name = models.CharField(max_length=100, db_index=True, blank=True, null=True)
-    phone = models.CharField(max_length=14, db_index=True, unique=True, blank=True)
-    address = models.CharField(max_length=255, null=True, blank=True)
-    picture = models.ImageField(default='img/user.png', upload_to='uploads/', null=True)
 
-    date_joined = models.DateTimeField(verbose_name='date_joined', auto_now_add=True)
-    last_login = models.DateTimeField(verbose_name='last_login', auto_now=True, null=True)
+class User(AbstractBaseUser, PermissionsMixin):
+    user_id = models.UUIDField(
+        default=uuid.uuid4, primary_key=True, unique=True, editable=False)
+    email = models.CharField(max_length=100, db_index=True,
+                             unique=True, verbose_name='email address', blank=True)
+    name = models.CharField(
+        max_length=100, db_index=True, blank=True, null=True)
+    phone = models.CharField(
+        max_length=14, db_index=True, unique=True, blank=True)
+    address = models.CharField(max_length=255, null=True, blank=True)
+    picture = models.ImageField(
+        default='img/user.png', upload_to='uploads/', null=True)
+
+    date_joined = models.DateTimeField(
+        verbose_name='date_joined', auto_now_add=True)
+    last_login = models.DateTimeField(
+        verbose_name='last_login', auto_now=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)

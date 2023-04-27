@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Manage Bidders{% endblock title %}
+
+  {% block head %}{% include 'partials/auth_head.html' %}{% endblock head %}
+
+  {% block body %}
+  <body data-open="click" data-menu="vertical-menu" data-col="2-columns" class="vertical-layout vertical-menu 2-columns  fixed-navbar">
+
+  {% block nav %} {% include 'partials/auth_nav.html' %} {% endblock %}
+
+  {% include 'partials/auth_sidebar.html' %}
+
+    <div class="app-content content container-fluid">
+      <div class="content-wrapper">
+        <div class="content-header row">
+          <div class="content-header-left col-md-6 col-xs-12 mb-1">
+            <h2 class="content-header-title">Manage Bidders</h2>
+          </div>
+
+            <div class="content-header-right breadcrumbs-right breadcrumbs-top col-md-6 col-xs-12">
+                <div class="breadcrumb-wrapper col-xs-12">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'auth:dashboard' %}">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item"><a href="{% url 'auth:create_bidder' %}">Create Bidder</a>
+                        </li>
+                        <li class="breadcrumb-item active">Manage Bidders
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-body">
+            {% include 'partials/messages.html' %}
+
+        <!-- Hoverable rows start -->
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Manage Bidders</h4>
+                        <a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
+                        <div class="heading-elements">
+                            <ul class="list-inline mb-0">
+                                <li><a data-action="collapse"><i class="icon-minus4"></i></a></li>
+                                <li><a data-action="expand"><i class="icon-expand2"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body collapse in">
+                        <div class="card-block card-dashboard">
+                            <p>The table below contains all bidders information.</p>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Image</th>
+                                        <th>Full Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                {% if object_list %}
+
+                                    {% for object in object_list %}
+
+                                    <tr>
+                                        <th scope="row">{{ forloop.counter}}</th>
+                                        <td><a href="{% url 'auth:update_bidder' object.pk %}"><img src="{{object.picture.url}}" width="35" alt=""></a></td>
+                                        <td>{{ object.name }}</td>
+                                        <td>{{ object.email }}</td>
+                                        <td>{{ object.phone }}</td>
+                                        <td><a href="" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{forloop.counter}}" style="cursor: pointer;"> <i class="icon-ios-trash"></i>Delete</a></td>
+                                    </tr>
+                                    <div class="modal fade" id="deleteModal{{forloop.counter}}" style="display: none;" aria-hidden="true">
+                                        <div class="modal-dialog" id="uploadDialog" role="document">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title">Delete Record for {{object.name}}</h5>
+                                              <button type="button" class="close btn btn-secondary" data-dismiss="modal"><span>×</span>
+                                              </button>
+                                            </div>
+                                            <form method="post" action="{% url 'auth:delete_bidder' object.pk %}">
+                                              <div class="modal-body">
+                                                <p>Are you sure you want to delete {{object.name}} record?</p>
+                                                <p> <b>NB:</b> This process is non-reversal</p>
+                                                {% csrf_token %}
+                                              </div>
+                                              <div class="modal-footer">
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-danger text-white">Delete Result</button>
+                                              </div>
+                                            </form>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    {% endfor %}
+
+                                {% endif %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Hoverable rows end -->
+        </div>
+      </div>
+    </div>
+    <!-- ////////////////////////////////////////////////////////////////////////////-->
+
+
+    {% block script %}{% include 'partials/auth_script.html' %}{% endblock script %}
+
+</body>
+{% endblock body %}
+

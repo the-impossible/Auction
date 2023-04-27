@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
+from django.urls import reverse_lazy
 
 # Create your views here.
 from Auction_auth.forms import *
@@ -14,8 +15,10 @@ from Auction_auth.forms import *
 class HomePageView(TemplateView):
     template_name = "frontend/index.html"
 
+
 class DashboardPageView(LoginRequiredMixin, TemplateView):
     template_name = "backend/dashboard.html"
+
 
 class LoginPageView(View):
     def get(self, request):
@@ -48,12 +51,15 @@ class LoginPageView(View):
 
         return redirect('auth:login')
 
+
 class LogoutView(LoginRequiredMixin, View):
 
     def post(self, request):
         logout(request)
-        messages.success(request, 'You are successfully logged out, to continue login again')
+        messages.success(
+            request, 'You are successfully logged out, to continue login again')
         return redirect('auth:login')
+
 
 class RegisterPageView(SuccessMessageMixin, CreateView):
     model = User
@@ -64,11 +70,45 @@ class RegisterPageView(SuccessMessageMixin, CreateView):
     def get_success_url(self):
         return reverse("auth:login")
 
+
 class CreateBidderPageView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = User
     form_class = BiddersCreationForm
-    template_name = "backend/bidders/create_bidder.html"
+    template_name = "backend/bidders/create_update_bidder.html"
     success_message = "Registration Successful bidders can login to their account now! "
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["type"] = 'Create'
+        return context
 
     def get_success_url(self):
         return reverse("auth:create_bidder")
+
+
+class ManageBiddersPageView(LoginRequiredMixin, ListView):
+    template_name = "backend/bidders/manage_bidders.html"
+
+    def get_queryset(self):
+        return User.objects.filter(is_staff=False, is_superuser=False).order_by('-date_joined')
+
+
+class DeleteBidderView(SuccessMessageMixin, DeleteView):
+    model = User
+    success_message = 'Deleted Successfully!'
+    success_url = reverse_lazy('auth:manage_bidders')
+
+
+class EditBidderView(SuccessMessageMixin, UpdateView):
+    model = User
+    template_name = "backend/bidders/create_update_bidder.html"
+    form_class = BiddersUpdateForm
+    success_message = 'Updated Successfully!'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["type"] = 'Update'
+        return context
+
+    def get_success_url(self):
+        return reverse("auth:manage_bidders")

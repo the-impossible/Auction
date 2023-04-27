@@ -74,6 +74,48 @@ class AccountCreationForm(forms.ModelForm):
 
 class BiddersCreationForm(AccountCreationForm, forms.ModelForm):
 
+    address = forms.CharField(help_text='Enter Full name', required=False, widget=forms.TextInput(
+        attrs={
+            'placeholder': 'Enter Full name',
+            'class': 'form-control form-control-lg input-lg',
+        }
+    ))
+
+    picture = forms.ImageField(required=False, widget=forms.FileInput(
+        attrs={
+            'class': 'form-control',
+            'type': 'file',
+            'accept': 'image/png, image/jpeg'
+        }
+    ))
+
+    class Meta:
+        model = User
+        fields = ('email', 'name', 'password', 'phone', 'address', 'picture')
+
+
+class BiddersUpdateForm(forms.ModelForm):
+
+    email = forms.CharField(help_text='Enter email', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control form-control-lg input-lg',
+            'type': 'email',
+        }
+    ))
+
+    name = forms.CharField(help_text='Enter Full name', widget=forms.TextInput(
+        attrs={
+            'placeholder': 'Enter Full name',
+            'class': 'form-control form-control-lg input-lg',
+        }
+    ))
+
+    phone = forms.CharField(help_text='Enter Phone number', widget=forms.TextInput(
+        attrs={
+            'placeholder': 'Enter Phone number',
+            'class': 'form-control form-control-lg input-lg',
+        }
+    ))
 
     address = forms.CharField(help_text='Enter Full name', required=False, widget=forms.TextInput(
         attrs={
@@ -83,14 +125,33 @@ class BiddersCreationForm(AccountCreationForm, forms.ModelForm):
     ))
 
     picture = forms.ImageField(required=False, widget=forms.FileInput(
-    attrs={
-            'class':'form-control',
-            'type':'file',
-            'accept':'image/png, image/jpeg'
+        attrs={
+            'class': 'form-control',
+            'type': 'file',
+            'accept': 'image/png, image/jpeg'
         }
     ))
 
-
     class Meta:
         model = User
-        fields = ('email', 'name', 'password', 'phone', 'address', 'picture')
+        fields = ('email', 'name', 'phone', 'address', 'picture')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        check = User.objects.filter(email=email)
+        if self.instance:
+            check = check.exclude(pk=self.instance.pk)
+        if check.exists():
+            raise forms.ValidationError('Email Already taken!')
+
+        return email
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+        check = User.objects.filter(phone=phone)
+        if self.instance:
+            check = check.exclude(pk=self.instance.pk)
+        if check.exists():
+            raise forms.ValidationError('phone Already taken!')
+
+        return phone

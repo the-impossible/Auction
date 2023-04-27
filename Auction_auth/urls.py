@@ -14,4 +14,7 @@ urlpatterns = [
     path('logout', LogoutView.as_view(), name='logout'),
 
     path('auth/create_bidder', CreateBidderPageView.as_view(), name='create_bidder'),
+    path('auth/manage_bidders', ManageBiddersPageView.as_view(), name='manage_bidders'),
+    path('auth/delete_bidder/<str:pk>', DeleteBidderView.as_view(), name='delete_bidder'),
+    path('auth/update_bidder/<str:pk>', EditBidderView.as_view(), name='update_bidder'),
 ]
