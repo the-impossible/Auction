@@ -14,7 +14,7 @@ from Auction_auth.forms import *
 class HomePageView(TemplateView):
     template_name = "frontend/index.html"
 
-class DashboardPageView(TemplateView):
+class DashboardPageView(LoginRequiredMixin, TemplateView):
     template_name = "backend/dashboard.html"
 
 class LoginPageView(View):
@@ -63,3 +63,12 @@ class RegisterPageView(SuccessMessageMixin, CreateView):
 
     def get_success_url(self):
         return reverse("auth:login")
+
+class CreateBidderPageView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    model = User
+    form_class = BiddersCreationForm
+    template_name = "backend/bidders/create_bidder.html"
+    success_message = "Registration Successful bidders can login to their account now! "
+
+    def get_success_url(self):
+        return reverse("auth:create_bidder")

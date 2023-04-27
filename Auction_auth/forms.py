@@ -5,17 +5,17 @@ from Auction_auth.models import User
 
 class AccountCreationForm(forms.ModelForm):
 
-    email = forms.CharField(help_text='Enter email',widget=forms.TextInput(
+    email = forms.CharField(help_text='Enter email', widget=forms.TextInput(
         attrs={
-            'class':'form-control form-control-lg input-lg',
-            'type':'email',
+            'class': 'form-control form-control-lg input-lg',
+            'type': 'email',
         }
     ))
 
-    password = forms.CharField(help_text='Enter Password',widget=forms.TextInput(
+    password = forms.CharField(help_text='Enter Password', widget=forms.TextInput(
         attrs={
-            'class':'form-control form-control-lg input-lg',
-            'type':'password',
+            'class': 'form-control form-control-lg input-lg',
+            'type': 'password',
         }
     ))
 
@@ -70,3 +70,27 @@ class AccountCreationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('email', 'name', 'password', 'phone')
+
+
+class BiddersCreationForm(AccountCreationForm, forms.ModelForm):
+
+
+    address = forms.CharField(help_text='Enter Full name', required=False, widget=forms.TextInput(
+        attrs={
+            'placeholder': 'Enter Full name',
+            'class': 'form-control form-control-lg input-lg',
+        }
+    ))
+
+    picture = forms.ImageField(required=False, widget=forms.FileInput(
+    attrs={
+            'class':'form-control',
+            'type':'file',
+            'accept':'image/png, image/jpeg'
+        }
+    ))
+
+
+    class Meta:
+        model = User
+        fields = ('email', 'name', 'password', 'phone', 'address', 'picture')

@@ -6,8 +6,12 @@ app_name = "auth"
 
 urlpatterns = [
     path('', HomePageView.as_view(), name='home'),
+
     path('auth/dashboard', DashboardPageView.as_view(), name='dashboard'),
+
     path('login', LoginPageView.as_view(), name='login'),
     path('register', RegisterPageView.as_view(), name='register'),
     path('logout', LogoutView.as_view(), name='logout'),
+
+    path('auth/create_bidder', CreateBidderPageView.as_view(), name='create_bidder'),
 ]
