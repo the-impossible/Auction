@@ -19,15 +19,18 @@
 		<div class="card border-grey border-lighten-3 px-2 py-2 m-0">
 			<div class="card-header no-border">
 				<div class="card-title text-xs-center">
-					<img src="{% static 'backend/app-assets/images/logo/robust-logo-light.png' %}" alt="branding logo">
+          <a href="{% url 'auth:home' %}">
+            <img src="{% static 'backend/app-assets/images/logo/robust-logo-light.png' %}" alt="branding logo">
+        </a>
 				</div>
 				<h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2"><span>Create Account</span></h6>
 			</div>
 			<div class="card-body collapse in">
 				<div class="card-block">
+          {% include 'partials/messages.html' %}
+
 					<form class="form-horizontal form-simple" method="POST">
             {% csrf_token %}
-
 						<fieldset class="form-group position-relative has-icon-left mb-1">
               {{ form.name }}
 							<div class="form-control-position">
