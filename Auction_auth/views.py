@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 
 # Create your views here.
@@ -13,10 +14,8 @@ from Auction_auth.forms import *
 class HomePageView(TemplateView):
     template_name = "frontend/index.html"
 
-
 class DashboardPageView(TemplateView):
     template_name = "backend/dashboard.html"
-
 
 class LoginPageView(View):
     def get(self, request):
@@ -49,6 +48,12 @@ class LoginPageView(View):
 
         return redirect('auth:login')
 
+class LogoutView(LoginRequiredMixin, View):
+
+    def post(self, request):
+        logout(request)
+        messages.success(request, 'You are successfully logged out, to continue login again')
+        return redirect('auth:login')
 
 class RegisterPageView(SuccessMessageMixin, CreateView):
     model = User

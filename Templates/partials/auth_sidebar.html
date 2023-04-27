@@ -4,7 +4,7 @@
     <!-- main menu content-->
     <div class="main-menu-content">
         <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main mt-2">
-          <li class=" nav-item"><a href="form-layout-basic.html"><i class="icon-home3"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Dashboard</span></a>
+          <li class=" nav-item"><a href="{% url 'auth:dashboard' %}"><i class="icon-home3"></i><span data-i18n="nav.form_layouts.form_layout_basic" class="menu-title">Dashboard</span></a>
           </li>
 
         <li class=" nav-item"><a href="#"><i class="icon-users2"></i><span data-i18n="nav.page_layouts.main" class="menu-title">Bidders</span></a>
@@ -46,10 +46,18 @@
         </li>
         <li class=" nav-item"><a href="https://github.com/pixinvent/robust-free-bootstrap-admin-template/issues"><i class="icon-user-tie"></i><span data-i18n="nav.support_raise_support.main" class="menu-title">Profile</span></a>
         </li>
-        <li class=" nav-item"><a href="https://pixinvent.com/free-bootstrap-template/robust-lite/documentation"><i class="icon-power3"></i><span data-i18n="nav.support_documentation.main" class="menu-title">Logout</span></a>
+
+        <li class="nav-item">
+        <a data-toggle="modal" data-target="#exampleModal" class="rich">
+          <i class="icon-power3"></i>
+            <span data-i18n="nav.support_documentation.main" class="menu-title">
+              Logout
+            </span>
+          </a>
         </li>
       </ul>
     </div>
+
     <!-- /main menu content-->
     <!-- main menu footer-->
     <!-- include includes/menu-footer-->
