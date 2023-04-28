@@ -17,11 +17,11 @@
             </li>
           </ul>
         </li>
-        <li class=" nav-item"><a href="#"><i class="icon-briefcase4"></i><span data-i18n="nav.project.main" class="menu-title">Furnitures</span></a>
+        <li class=" nav-item"><a href="#"><i class="icon-briefcase4"></i><span data-i18n="nav.project.main" class="menu-title">Furniture's</span></a>
           <ul class="menu-content">
-            <li><a href="invoice-template.html" data-i18n="nav.invoice.invoice_template" class="menu-item">Register Furnitures</a>
+            <li><a href="{% url 'auth:create_furniture' %}" data-i18n="nav.invoice.invoice_template" class="menu-item">Register Furniture</a>
             </li>
-            <li><a href="gallery-grid.html" data-i18n="nav.gallery_pages.gallery_grid" class="menu-item">Manage Furnitures</a>
+            <li><a href="{% url 'auth:manage_furniture' %}" data-i18n="nav.gallery_pages.gallery_grid" class="menu-item">Manage Furniture's</a>
             </li>
           </ul>
         </li>

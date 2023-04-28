@@ -1,6 +1,6 @@
 from django import forms
 
-from Auction_auth.models import User
+from Auction_auth.models import *
 
 
 class AccountCreationForm(forms.ModelForm):
@@ -155,3 +155,77 @@ class BiddersUpdateForm(forms.ModelForm):
             raise forms.ValidationError('phone Already taken!')
 
         return phone
+
+
+class FurnitureForm(forms.ModelForm):
+
+    furniture_name = forms.CharField(help_text='Enter furniture_name', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control form-control-lg input-lg',
+            'type': 'text',
+        }
+    ))
+
+    start_price = forms.CharField(help_text='Enter start_price', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control form-control-lg input-lg',
+            'type': 'number',
+        }
+    ))
+
+    furniture_desc = forms.CharField(help_text='Enter Furniture Description', widget=forms.Textarea(
+        attrs={
+            'class': 'form-control form-control-lg input-lg',
+            'rows': 3,
+        }
+    ))
+
+    start_date_and_time = forms.CharField(help_text='Enter Start Date and Time', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control',
+            'type': 'datetime-local',
+        }
+    ))
+
+    end_date_and_time = forms.CharField(help_text='Enter End Date and Time', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control',
+            'type': 'datetime-local',
+        }
+    ))
+
+    image = forms.ImageField(widget=forms.FileInput(
+        attrs={
+            'class': 'form-control',
+            'type': 'file',
+            'accept': 'image/png, image/jpeg'
+        }
+    ))
+
+    class Meta:
+        model = Furniture
+        fields = ('furniture_name', 'start_price', 'furniture_desc',
+                  'image', 'start_date_and_time', 'end_date_and_time')
+
+
+class EditFurnitureForm(FurnitureForm, forms.ModelForm):
+
+    image = forms.ImageField(required=False, widget=forms.FileInput(
+        attrs={
+            'class': 'form-control',
+            'type': 'file',
+            'accept': 'image/png, image/jpeg'
+        }
+    ))
+
+    is_sold = forms.BooleanField(required=False, help_text='Is the furniture sold?', widget=forms.CheckboxInput(
+        attrs={
+            'class': 'form-control',
+            'type': 'checkbox',
+        }
+    ))
+
+    class Meta:
+        model = Furniture
+        fields = ('furniture_name', 'start_price', 'furniture_desc',
+                  'image', 'start_date_and_time', 'end_date_and_time', 'is_sold')

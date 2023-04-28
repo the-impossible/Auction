@@ -87,3 +87,24 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = 'Users'
         verbose_name_plural = 'Users'
+
+
+class Furniture(models.Model):
+    furniture_id = models.UUIDField(
+        default=uuid.uuid4, primary_key=True, unique=True, editable=False)
+    furniture_name = models.CharField(max_length=100)
+    start_price = models.FloatField()
+    furniture_desc = models.TextField()
+    created = models.DateTimeField(
+        verbose_name='date_created', auto_now_add=True)
+    start_date_and_time = models.DateTimeField(null=True)
+    end_date_and_time = models.DateTimeField(null=True)
+    is_sold = models.BooleanField(default=False)
+    image = models.ImageField(null=True, blank=True, upload_to='uploads/')
+
+    def __str__(self):
+        return self.furniture_name
+
+    class Meta:
+        db_table = 'Furniture'
+        verbose_name_plural = 'Furniture'

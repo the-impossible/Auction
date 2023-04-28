@@ -17,4 +17,9 @@ urlpatterns = [
     path('auth/manage_bidders', ManageBiddersPageView.as_view(), name='manage_bidders'),
     path('auth/delete_bidder/<str:pk>', DeleteBidderView.as_view(), name='delete_bidder'),
     path('auth/update_bidder/<str:pk>', EditBidderView.as_view(), name='update_bidder'),
+
+    path('auth/create_furniture', CreateFurniturePageView.as_view(), name='create_furniture'),
+    path('auth/manage_furniture', ManageFurniturePageView.as_view(), name='manage_furniture'),
+    path('auth/update_furniture/<str:pk>', EditFurnitureView.as_view(), name='update_furniture'),
+    path('auth/delete_furniture/<str:pk>', DeleteFurnitureView.as_view(), name='delete_furniture'),
 ]

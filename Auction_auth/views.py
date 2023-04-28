@@ -51,7 +51,6 @@ class LoginPageView(View):
 
         return redirect('auth:login')
 
-
 class LogoutView(LoginRequiredMixin, View):
 
     def post(self, request):
@@ -92,14 +91,12 @@ class ManageBiddersPageView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return User.objects.filter(is_staff=False, is_superuser=False).order_by('-date_joined')
 
-
-class DeleteBidderView(SuccessMessageMixin, DeleteView):
+class DeleteBidderView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = User
     success_message = 'Deleted Successfully!'
     success_url = reverse_lazy('auth:manage_bidders')
 
-
-class EditBidderView(SuccessMessageMixin, UpdateView):
+class EditBidderView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = User
     template_name = "backend/bidders/create_update_bidder.html"
     form_class = BiddersUpdateForm
@@ -112,3 +109,42 @@ class EditBidderView(SuccessMessageMixin, UpdateView):
 
     def get_success_url(self):
         return reverse("auth:manage_bidders")
+
+class CreateFurniturePageView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    model = Furniture
+    form_class = FurnitureForm
+    template_name = "backend/furniture/create_update_furniture.html"
+    success_message = "Furniture uploaded successfully! "
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["type"] = 'Create'
+        return context
+
+    def get_success_url(self):
+        return reverse("auth:create_furniture")
+
+class ManageFurniturePageView(LoginRequiredMixin, ListView):
+    template_name = "backend/furniture/manage_furnitures.html"
+
+    def get_queryset(self):
+        return Furniture.objects.all().order_by('-created')
+
+class EditFurnitureView(SuccessMessageMixin,LoginRequiredMixin, UpdateView):
+    model = Furniture
+    template_name = "backend/furniture/create_update_furniture.html"
+    form_class = EditFurnitureForm
+    success_message = 'Updated Successfully!'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["type"] = 'Update'
+        return context
+
+    def get_success_url(self):
+        return reverse("auth:manage_furniture")
+
+class DeleteFurnitureView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    model = Furniture
+    success_message = 'Furniture Deleted Successfully!'
+    success_url = reverse_lazy('auth:manage_furniture')
