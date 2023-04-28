@@ -199,7 +199,17 @@ class EditAdminView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse("auth:manage_admin")
 
+
 class DeleteAdminView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = User
     success_message = 'Admin Account Deleted Successfully!'
     success_url = reverse_lazy('auth:manage_admin')
+
+
+class OnGoingAuctionView(LoginRequiredMixin, ListView):
+    template_name = "backend/auction/on_going.html"
+
+    def get_queryset(self):
+        all_furniture = Furniture.objects.all().order_by('-created')
+        print(type(all_furniture))
+        return [on_going for on_going in all_furniture if on_going.start_date_and_time <= on_going.end_date_and_time]

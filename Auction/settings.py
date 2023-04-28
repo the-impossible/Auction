@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "Auction_auth",
     "crispy_bootstrap4",
     "crispy_forms",
+    "django_htmx",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [

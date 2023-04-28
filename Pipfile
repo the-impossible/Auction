@@ -11,6 +11,8 @@ python-decouple = "*"
 pylint-django = "*"
 crispy-bootstrap4 = "*"
 pylint = "*"
+django-extensions = "*"
+django-htmx = "*"
 
 [dev-packages]
 

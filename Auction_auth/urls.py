@@ -27,4 +27,6 @@ urlpatterns = [
     path('auth/manage_admin', ManageAdminPageView.as_view(), name='manage_admin'),
     path('auth/update_admin/<str:pk>', EditAdminView.as_view(), name='update_admin'),
     path('auth/delete_admin/<str:pk>', DeleteAdminView.as_view(), name='delete_admin'),
+
+    path('auth/on_going', OnGoingAuctionView.as_view(), name='on_going'),
 ]
