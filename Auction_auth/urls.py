@@ -22,4 +22,9 @@ urlpatterns = [
     path('auth/manage_furniture', ManageFurniturePageView.as_view(), name='manage_furniture'),
     path('auth/update_furniture/<str:pk>', EditFurnitureView.as_view(), name='update_furniture'),
     path('auth/delete_furniture/<str:pk>', DeleteFurnitureView.as_view(), name='delete_furniture'),
+
+    path('auth/create_admin', CreateAdminPageView.as_view(), name='create_admin'),
+    path('auth/manage_admin', ManageAdminPageView.as_view(), name='manage_admin'),
+    path('auth/update_admin/<str:pk>', EditAdminView.as_view(), name='update_admin'),
+    path('auth/delete_admin/<str:pk>', DeleteAdminView.as_view(), name='delete_admin'),
 ]

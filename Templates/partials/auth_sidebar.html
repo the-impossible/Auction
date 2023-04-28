@@ -27,9 +27,9 @@
         </li>
         <li class=" nav-item"><a href="#"><i class="icon-security"></i><span data-i18n="nav.cards.main" class="menu-title">Administrators</span></a>
           <ul class="menu-content">
-            <li><a href="card-bootstrap.html" data-i18n="nav.cards.card_bootstrap" class="menu-item">Create Administrators</a>
+            <li><a href="{% url 'auth:create_admin' %}" data-i18n="nav.cards.card_bootstrap" class="menu-item">Create Administrators</a>
             </li>
-            <li><a href="card-actions.html" data-i18n="nav.cards.card_actions" class="menu-item">Manage Administrators</a>
+            <li><a href="{% url 'auth:manage_admin' %}" data-i18n="nav.cards.card_actions" class="menu-item">Manage Administrators</a>
             </li>
           </ul>
         </li>

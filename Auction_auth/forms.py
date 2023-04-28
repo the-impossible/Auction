@@ -117,9 +117,9 @@ class BiddersUpdateForm(forms.ModelForm):
         }
     ))
 
-    address = forms.CharField(help_text='Enter Full name', required=False, widget=forms.TextInput(
+    address = forms.CharField(help_text='Enter address', required=False, widget=forms.TextInput(
         attrs={
-            'placeholder': 'Enter Full name',
+            'placeholder': 'Enter address',
             'class': 'form-control form-control-lg input-lg',
         }
     ))
@@ -229,3 +229,54 @@ class EditFurnitureForm(FurnitureForm, forms.ModelForm):
         model = Furniture
         fields = ('furniture_name', 'start_price', 'furniture_desc',
                   'image', 'start_date_and_time', 'end_date_and_time', 'is_sold')
+
+
+class AdminCreationForm(AccountCreationForm, forms.ModelForm):
+
+    picture = forms.ImageField(required=False, widget=forms.FileInput(
+        attrs={
+            'class': 'form-control',
+            'type': 'file',
+            'accept': 'image/png, image/jpeg'
+        }
+    ))
+
+    class Meta:
+        model = User
+        fields = ('email', 'name', 'password', 'phone', 'picture')
+
+
+class UpdateAdminForm(forms.ModelForm):
+
+    email = forms.CharField(help_text='Enter email', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control form-control-lg input-lg',
+            'type': 'email',
+        }
+    ))
+
+    name = forms.CharField(help_text='Enter Full name', widget=forms.TextInput(
+        attrs={
+            'placeholder': 'Enter Full name',
+            'class': 'form-control form-control-lg input-lg',
+        }
+    ))
+
+    phone = forms.CharField(help_text='Enter Phone number', widget=forms.TextInput(
+        attrs={
+            'placeholder': 'Enter Phone number',
+            'class': 'form-control form-control-lg input-lg',
+        }
+    ))
+
+    picture = forms.ImageField(required=False, widget=forms.FileInput(
+        attrs={
+            'class': 'form-control',
+            'type': 'file',
+            'accept': 'image/png, image/jpeg'
+        }
+    ))
+
+    class Meta:
+        model = User
+        fields = ('email', 'name', 'phone', 'picture')

@@ -2,7 +2,7 @@
 
 {% load static %}
 {% load crispy_forms_tags %}
-{% block title %}Bidders{% endblock title %}
+{% block title %}Administrators{% endblock title %}
 
   {% block head %}{% include 'partials/auth_head.html' %}{% endblock head %}
 
@@ -18,14 +18,14 @@
       <div class="content-wrapper">
         <div class="content-header row">
           <div class="content-header-left col-md-6 col-xs-12 mb-1">
-            <h2 class="content-header-title">{{type}} Bidder</h2>
+            <h2 class="content-header-title">{{type}} Administrator</h2>
           </div>
           <div class="content-header-right breadcrumbs-right breadcrumbs-top col-md-6 col-xs-12">
             <div class="breadcrumb-wrapper col-xs-12">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{% url 'auth:dashboard' %}">Dashboard</a>
                 </li>
-                <li class="breadcrumb-item active">{{type}} Bidder </li>
+                <li class="breadcrumb-item active">{{type}} Administrator </li>
               </ol>
             </div>
           </div>
@@ -39,7 +39,7 @@
 				<div class="col-md-6 offset-md-3">
 					<div class="card">
 						<div class="card-header">
-							<h4 class="card-title" id="basic-layout-card-center"> {% if type == 'Create' %} Bidders Registration {% else %} Update Bidder{% endif %}</h4>
+							<h4 class="card-title" id="basic-layout-card-center"> {% if type == 'Create' %} Administrator Registration {% else %} Update Administrator{% endif %}</h4>
 							<a class="heading-elements-toggle"><i class="icon-ellipsis font-medium-3"></i></a>
 							<div class="heading-elements">
 								<ul class="list-inline mb-0">
@@ -51,7 +51,7 @@
 						<div class="card-body collapse in">
 							<div class="card-block">
 								<div class="card-text">
-									<p>Fill the form below to {{type|lower}} a bidder.</p>
+									<p>Fill the form below to {{type|lower}} a administrator.</p>
 								</div>
 								<form class="form" method="POST" enctype="multipart/form-data">
 									{% csrf_token %}
