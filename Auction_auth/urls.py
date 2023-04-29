@@ -29,4 +29,5 @@ urlpatterns = [
     path('auth/delete_admin/<str:pk>', DeleteAdminView.as_view(), name='delete_admin'),
 
     path('auth/on_going', OnGoingAuctionView.as_view(), name='on_going'),
+    path('auth/bid/<str:pk>', BiddingDetailView.as_view(), name='bid'),
 ]

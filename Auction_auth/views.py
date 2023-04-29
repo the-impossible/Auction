@@ -7,6 +7,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.urls import reverse_lazy
+from django.utils import timezone
 
 # Create your views here.
 from Auction_auth.forms import *
@@ -211,5 +212,27 @@ class OnGoingAuctionView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         all_furniture = Furniture.objects.all().order_by('-created')
-        print(type(all_furniture))
-        return [on_going for on_going in all_furniture if on_going.start_date_and_time <= on_going.end_date_and_time]
+        now = timezone.now()
+        return [on_going for on_going in all_furniture if now < on_going.end_date_and_time]
+
+
+class BiddingDetailView(SuccessMessageMixin, LoginRequiredMixin, DetailView):
+    model = Furniture
+    template_name = "backend/auction/bid.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = EditFurnitureForm
+
+        return context
+
+    # def get_object(self):
+    #     try:
+    #         return BirthRegistration.objects.get(birth_id=self.kwargs['pk'])
+    #     except BirthRegistration.DoesNotExist:
+    #         try:
+    #             return BirthRegistration.objects.get(user_id=self.kwargs['pk'])
+    #         except BirthRegistration.DoesNotExist:
+    #             messages.error(request, "Failed in getting certificate!")
+    #             return redirect('auth:dashboard')
+    #         return redirect('auth:dashboard')

@@ -108,3 +108,22 @@ class Furniture(models.Model):
     class Meta:
         db_table = 'Furniture'
         verbose_name_plural = 'Furniture'
+
+
+class Bidding(models.Model):
+    bid_id = models.UUIDField(
+        default=uuid.uuid4, primary_key=True, unique=True, editable=False)
+    furniture = models.ForeignKey(
+        "Furniture", on_delete=models.CASCADE, blank=True, null=True)
+    bider = models.ForeignKey(
+        "User", on_delete=models.CASCADE, blank=True, null=True)
+    bid_price = models.FloatField()
+    bid_date = models.DateTimeField(
+        verbose_name='bid_date', auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.bider.name} | {self.furniture.furniture_name }"
+
+    class Meta:
+        db_table = 'Bidding'
+        verbose_name_plural = 'Bidding'

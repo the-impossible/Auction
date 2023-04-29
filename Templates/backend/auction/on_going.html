@@ -48,25 +48,26 @@
 
 						{% for object in object_list %}
 
-						<div class="col-xl-3 col-md-6 col-sm-12">
+						<div class="col-xl-3 col-md-4 col-sm-12">
 							<div class="card">
 								<div class="card-body">
 									<div class="text-center">
 										<img class="card-img-top img-fluid" src="{{ object.image.url }}" alt="Card image cap">
 									</div>
 									<div class="card-block">
-										<h4 class="card-title">{{ object.furniture_name }}</h4>
-										<p class="card-title"><span class="text-danger">Time Remaining </span> <br><span class="text-dark">{{ object.end_date_and_time }}</span></p>
+										<h4 class="card-title">{{ object.furniture_name|truncatechars:21 }}</h4>
 										<p class="card-text">Started: {{ object.start_date_and_time }}</p>
+										<p class="card-title"><span class="text-dark">Time Remaining </span></p>
+										<p class="card-text ending text-danger">{{ object.end_date_and_time|date:"D, d M Y H:i:s" }}</p>
 									</div>
 								</div>
 								<div class="card-footer border-top-blue-grey border-top-lighten-5 text-muted">
-									<span class="float-xs-left">No of bids: 0</span>
-									<a href="#" class="btn btn-outline-teal float-xs-right">Click to Bid</a>
+									<a href="{% url 'auth:bid' object.pk %}" class="btn btn-outline-teal float-xs-right">Click to Bid</a>
 									</span>
 								</div>
 							</div>
 						</div>
+
 						{% endfor %}
 					{% endif %}
 				</div>
@@ -78,7 +79,6 @@
     <!-- ////////////////////////////////////////////////////////////////////////////-->
 
     {% block script %}{% include 'partials/auth_script.html' %}{% endblock script %}
-
 </body>
 {% endblock body %}
 

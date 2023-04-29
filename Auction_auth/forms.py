@@ -280,3 +280,38 @@ class UpdateAdminForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('email', 'name', 'phone', 'picture')
+
+class BiddingForm(forms.ModelForm):
+
+    email = forms.CharField(help_text='Enter email', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control form-control-lg input-lg',
+            'type': 'email',
+        }
+    ))
+
+    name = forms.CharField(help_text='Enter Full name', widget=forms.TextInput(
+        attrs={
+            'placeholder': 'Enter Full name',
+            'class': 'form-control form-control-lg input-lg',
+        }
+    ))
+
+    phone = forms.CharField(help_text='Enter Phone number', widget=forms.TextInput(
+        attrs={
+            'placeholder': 'Enter Phone number',
+            'class': 'form-control form-control-lg input-lg',
+        }
+    ))
+
+    picture = forms.ImageField(required=False, widget=forms.FileInput(
+        attrs={
+            'class': 'form-control',
+            'type': 'file',
+            'accept': 'image/png, image/jpeg'
+        }
+    ))
+
+    class Meta:
+        model = User
+        fields = ('email', 'name', 'phone', 'picture')
