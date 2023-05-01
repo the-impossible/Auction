@@ -11,6 +11,7 @@ from django.utils import timezone
 
 # Create your views here.
 from Auction_auth.forms import *
+from Auction_auth.models import *
 
 
 class HomePageView(TemplateView):
@@ -207,6 +208,15 @@ class DeleteAdminView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('auth:manage_admin')
 
 
+def is_over(furniture_id):
+    now = timezone.now()
+    end_date_and_time = Furniture.objects.get(
+        furniture_id=furniture_id).end_date_and_time
+    if now > end_date_and_time:
+        return True
+    return False
+
+
 class OnGoingAuctionView(LoginRequiredMixin, ListView):
     template_name = "backend/auction/on_going.html"
 
@@ -215,24 +225,78 @@ class OnGoingAuctionView(LoginRequiredMixin, ListView):
         now = timezone.now()
         return [on_going for on_going in all_furniture if now < on_going.end_date_and_time]
 
+class ClosedAuctionView(LoginRequiredMixin, ListView):
+    template_name = "backend/auction/closed.html"
 
-class BiddingDetailView(SuccessMessageMixin, LoginRequiredMixin, DetailView):
-    model = Furniture
-    template_name = "backend/auction/bid.html"
+    def get_queryset(self):
+        all_furniture = Furniture.objects.all().order_by('-created')
+        now = timezone.now()
+        return [closed for closed in all_furniture if now > closed.end_date_and_time]
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["form"] = EditFurnitureForm
 
-        return context
+class BiddingDetailView(LoginRequiredMixin, View):
+    def get(self, request, furniture_id):
 
-    # def get_object(self):
-    #     try:
-    #         return BirthRegistration.objects.get(birth_id=self.kwargs['pk'])
-    #     except BirthRegistration.DoesNotExist:
-    #         try:
-    #             return BirthRegistration.objects.get(user_id=self.kwargs['pk'])
-    #         except BirthRegistration.DoesNotExist:
-    #             messages.error(request, "Failed in getting certificate!")
-    #             return redirect('auth:dashboard')
-    #         return redirect('auth:dashboard')
+        context = {
+            "form": BiddingForm(furniture_id=furniture_id),
+            "biders": Bidding.objects.filter(
+                furniture=Furniture.objects.get(furniture_id=furniture_id)).order_by('-bid_date'),
+        }
+
+        try:
+            is_completed = is_over(furniture_id)
+
+            if is_completed:
+                messages.error(
+                    request, "The Furniture auction process has ended!")
+                # Route to winner page
+                return redirect('auth:on_going')
+
+            else:
+                furniture = Furniture.objects.get(furniture_id=furniture_id)
+                context["object"] = furniture
+                context["is_over"] = is_completed
+                if request.htmx:
+                    return render(request, 'partials/bider_list.html', context)
+
+                return render(request, 'backend/auction/bid.html', context)
+
+        except Furniture.DoesNotExist:
+            messages.error(request, "Unable to get furniture!")
+        return redirect('auth:on_going')
+
+    def post(self, request, furniture_id):
+        form = BiddingForm(
+            request.POST, furniture_id=furniture_id)
+        context = {
+            "biders": Bidding.objects.filter(
+                furniture=Furniture.objects.get(furniture_id=furniture_id)).order_by('-bid_date'),
+        }
+        furniture = Furniture.objects.get(furniture_id=furniture_id)
+        is_completed = is_over(furniture_id)
+
+        context["object"] = furniture
+        context["is_over"] = is_completed
+
+        if not is_completed:
+
+            if form.is_valid():
+
+                form = form.save(commit=False)
+                form.furniture = Furniture.objects.get(
+                    furniture_id=furniture_id)
+                form.bider = request.user
+                form.save()
+
+                messages.success(request, 'You have successfully placed a bid')
+                return redirect('auth:bid', furniture_id)
+            else:
+                messages.error(request, form.errors.as_text())
+
+            context["form"] = form
+
+            return render(request, 'backend/auction/bid.html', context)
+        else:
+            messages.error(
+                request, "Bid session over, you can no longer place bid")
+            return redirect('auth:bid', furniture_id)

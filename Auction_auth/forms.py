@@ -1,5 +1,4 @@
 from django import forms
-
 from Auction_auth.models import *
 
 
@@ -281,37 +280,32 @@ class UpdateAdminForm(forms.ModelForm):
         model = User
         fields = ('email', 'name', 'phone', 'picture')
 
+
 class BiddingForm(forms.ModelForm):
 
-    email = forms.CharField(help_text='Enter email', widget=forms.TextInput(
+    def __init__(self, *args, **kwargs):
+        self.furniture_id = kwargs.pop('furniture_id', 'fail')
+        super(BiddingForm, self).__init__(*args, **kwargs)
+        # self.fields['stud_id'].queryset=StudentProfile.objects.filter(dept_id=self.dept_id)
+
+    bid_price = forms.CharField(help_text='Enter bid_price', widget=forms.TextInput(
         attrs={
             'class': 'form-control form-control-lg input-lg',
-            'type': 'email',
-        }
-    ))
-
-    name = forms.CharField(help_text='Enter Full name', widget=forms.TextInput(
-        attrs={
-            'placeholder': 'Enter Full name',
-            'class': 'form-control form-control-lg input-lg',
-        }
-    ))
-
-    phone = forms.CharField(help_text='Enter Phone number', widget=forms.TextInput(
-        attrs={
-            'placeholder': 'Enter Phone number',
-            'class': 'form-control form-control-lg input-lg',
-        }
-    ))
-
-    picture = forms.ImageField(required=False, widget=forms.FileInput(
-        attrs={
-            'class': 'form-control',
-            'type': 'file',
-            'accept': 'image/png, image/jpeg'
+            'type': 'number',
         }
     ))
 
     class Meta:
-        model = User
-        fields = ('email', 'name', 'phone', 'picture')
+        model = Bidding
+        fields = ('bid_price',)
+
+    def clean_bid_price(self, *args, **kwargs):
+        bid_price = self.cleaned_data.get('bid_price')
+        start_price = Furniture.objects.get(
+            furniture_id=self.furniture_id).start_price
+
+        if float(bid_price) < start_price:
+
+            raise forms.ValidationError("You can't bid below the start price")
+
+        return bid_price

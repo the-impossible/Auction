@@ -1,0 +1,11 @@
+{% if biders %}
+{% for object in biders %}
+<tr>
+    <th scope="row">{{ forloop.counter}}</th>
+    <td><img src="{{object.bider.picture.url}}" width="35" alt=""> {{object.bider.name}}</td>
+    <td>{{ object.bid_price }}</td>
+    <td>{{ object.bid_date }}</td>
+</tr>
+{% endfor %}
+{% endif %}
+

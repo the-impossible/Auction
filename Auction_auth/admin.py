@@ -35,3 +35,4 @@ class FurnitureAdmin(UserAdmin):
 # admin.site.register(Furniture, FurnitureAdmin)
 admin.site.register(Furniture)
 admin.site.register(User)
+admin.site.register(Bidding)
