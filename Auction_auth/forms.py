@@ -179,14 +179,14 @@ class FurnitureForm(forms.ModelForm):
         }
     ))
 
-    start_date_and_time = forms.CharField(help_text='Enter Start Date and Time', widget=forms.TextInput(
+    start_date_and_time = forms.DateTimeField(help_text='Enter Start Date and Time', widget=forms.TextInput(
         attrs={
             'class': 'form-control',
             'type': 'datetime-local',
         }
     ))
 
-    end_date_and_time = forms.CharField(help_text='Enter End Date and Time', widget=forms.TextInput(
+    end_date_and_time = forms.DateTimeField(help_text='Enter Start Date and Time', widget=forms.TextInput(
         attrs={
             'class': 'form-control',
             'type': 'datetime-local',

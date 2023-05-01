@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib import messages
@@ -12,6 +12,8 @@ from django.utils import timezone
 # Create your views here.
 from Auction_auth.forms import *
 from Auction_auth.models import *
+# import stripe
+# stripe.api_key = "sk_test_51L5Xs6GCAqCizi1RncjTC84yc0J7jaecLFB5gj07ZDNWCREFyEylsunXTltlQleL3lWzEcLsqIFCInvn6wGYu2Xa00cIHRZjMz"
 
 
 class HomePageView(TemplateView):
@@ -20,6 +22,19 @@ class HomePageView(TemplateView):
 
 class DashboardPageView(LoginRequiredMixin, TemplateView):
     template_name = "backend/dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["furniture"] = Furniture.objects.all().count()
+        context["biders"] = User.objects.filter(is_staff=False).count()
+        context["on_going"] = len(
+            [on_going for on_going in Furniture.objects.all() if timezone.now() < on_going.end_date_and_time])
+        context["closed"] = len(
+            [on_going for on_going in Furniture.objects.all() if timezone.now() > on_going.end_date_and_time])
+        if not self.request.user.is_staff:
+            context["won"] = Furniture.objects.filter(
+                sold_to=self.request.user).count()
+        return context
 
 
 class LoginPageView(View):
@@ -279,10 +294,7 @@ class BiddingDetailView(LoginRequiredMixin, View):
                 if request.htmx:
 
                     # End polling
-                    response['HX-Redirect'] = "true"
-                    response = redirect('auth:winner', furniture_id)
-
-                    return response
+                    return HttpResponse(status=200, headers={'HX-Redirect': reverse('auth:winner', args=[furniture_id])})
 
                 return redirect('auth:winner', furniture_id)
             else:
@@ -360,7 +372,7 @@ class ManageAuctionWinnersView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
 
-        return Bidding.objects.all()
+        return [furniture for furniture in Furniture.objects.all() if furniture.sold_to]
 
 
 class UpdateProfileView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
@@ -376,5 +388,15 @@ class UpdateProfileView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         context["type"] = 'Update'
         return context
 
-    # def get_success_url(self):
-    #     return reverse("auth:profile", f'{self.request.user.pk}')
+
+class DeleteWinView(SuccessMessageMixin, LoginRequiredMixin, View):
+
+    def post(self, *args, **kwargs):
+        furniture_id = self.kwargs['pk']
+        furniture = Furniture.objects.get(furniture_id=furniture_id)
+        furniture.sold_to = None
+        furniture.sold_price = None
+
+        furniture.save()
+        messages.success(self.request, 'Winner has been deleted Successfully!')
+        return redirect('auth:winners_list')

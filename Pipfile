@@ -13,6 +13,7 @@ crispy-bootstrap4 = "*"
 pylint = "*"
 django-extensions = "*"
 django-htmx = "*"
+stripe = "*"
 
 [dev-packages]
 

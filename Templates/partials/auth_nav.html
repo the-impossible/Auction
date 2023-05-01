@@ -126,7 +126,7 @@
 							><span class="user-name">{{request.user.name}}</span></a
 						>
 						<div class="dropdown-menu dropdown-menu-right">
-							<a href="#" class="dropdown-item"
+							<a href="{% url 'auth:profile' request.user.pk %}" class="dropdown-item"
 								><i class="icon-head"></i> Edit Profile</a
 							>
 
