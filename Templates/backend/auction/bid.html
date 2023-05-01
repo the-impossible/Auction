@@ -53,8 +53,15 @@
                         <div class="row">
                             <div class="col-lg-4 col-xs-12">
                                 <img class="img-fluid" src="{{ object.image.url }}" alt="Timeline Image 1">
+
+                                {% if is_over %}
+                                <p>Auction just ended click the button below to confirm bid winner</p>
+                                <a href="" class="btn btn-primary btn-block">
+                                  <i class="icon-check2"></i> Click to view Winner
+                                </a>
+
+                                {% else %}
                                 <form class="form" method="POST">
-                                {% comment %} <form class="form" method="POST" action="{% url 'auth:place_bid' object.pk %}" > {% endcomment %}
                                   {% csrf_token %}
                                   <div class="form-body">
                                     {{ form|crispy }}
@@ -70,6 +77,8 @@
                                     </button>
                                   </div>
                                 </form>
+                                {% endif %}
+
                             </div>
                             <div class="col-lg-8 col-xs-12">
                               <h3 class="my-1">{{ object.furniture_name }}</h3>
@@ -81,7 +90,7 @@
                               <p>{{ object.furniture_desc }}</p>
                               <p></p>
                               <hr>
-                              <h3 class="my-1">Biders List</h3>
+                              <h3 class="my-1">Biders List {{is_over}}</h3>
 
                               <div class="table-responsive">
                                 <table class="table table-hover mb-0">
@@ -97,7 +106,7 @@
                                     {% if is_over %}
                                     <tbody>
                                     {% else %}
-                                    <tbody hx-get="{% url 'auth:bid' object.furniture_id %}" hx-trigger="every 5s" hx-swap="innerHTML">
+                                    <tbody hx-get="{% url 'auth:bid' object.furniture_id %}" hx-trigger="every 2s" hx-swap="innerHTML">
                                     {% endif %}
                                       {% include 'partials/bider_list.html' %}
                                     </tbody>

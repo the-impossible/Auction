@@ -39,7 +39,7 @@
           <ul class="menu-content">
             <li><a href="{% url 'auth:on_going' %}" data-i18n="nav.cards.card_statistics" class="menu-item">On-going Auctions</a>
             </li>
-            <li><a href="card-charts.html" data-i18n="nav.cards.card_charts" class="menu-item">Auction Winners</a>
+            <li><a href="{% url 'auth:winners_list' %}" data-i18n="nav.cards.card_charts" class="menu-item">Auction Winners</a>
             </li>
             <li><a href="{% url 'auth:closed' %}" data-i18n="nav.cards.card_charts" class="menu-item">closed Auctions</a>
             </li>

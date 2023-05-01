@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib import messages
@@ -217,6 +217,27 @@ def is_over(furniture_id):
     return False
 
 
+def declare_winner(furniture_id):
+    try:
+        furniture = Furniture.objects.get(furniture_id=furniture_id)
+        price = 0
+        winner = ''
+
+        all_bids = Bidding.objects.filter(furniture=furniture)
+
+        for bid in all_bids:
+            if bid.bid_price > price:
+                winner = bid.bider
+                price = bid.bid_price
+
+        furniture.sold_to = winner
+        furniture.sold_price = price
+        furniture.save()
+        return True
+    except Furniture.DoesNotExist:
+        return False
+
+
 class OnGoingAuctionView(LoginRequiredMixin, ListView):
     template_name = "backend/auction/on_going.html"
 
@@ -224,6 +245,7 @@ class OnGoingAuctionView(LoginRequiredMixin, ListView):
         all_furniture = Furniture.objects.all().order_by('-created')
         now = timezone.now()
         return [on_going for on_going in all_furniture if now < on_going.end_date_and_time]
+
 
 class ClosedAuctionView(LoginRequiredMixin, ListView):
     template_name = "backend/auction/closed.html"
@@ -246,16 +268,24 @@ class BiddingDetailView(LoginRequiredMixin, View):
         try:
             is_completed = is_over(furniture_id)
 
-            if is_completed:
-                messages.error(
-                    request, "The Furniture auction process has ended!")
-                # Route to winner page
-                return redirect('auth:on_going')
+            furniture = Furniture.objects.get(furniture_id=furniture_id)
+            context["object"] = furniture
+            context["is_over"] = is_completed
 
+            if is_completed:
+                # Award winner
+                declare_winner(furniture_id)
+
+                if request.htmx:
+
+                    # End polling
+                    response['HX-Redirect'] = "true"
+                    response = redirect('auth:winner', furniture_id)
+
+                    return response
+
+                return redirect('auth:winner', furniture_id)
             else:
-                furniture = Furniture.objects.get(furniture_id=furniture_id)
-                context["object"] = furniture
-                context["is_over"] = is_completed
                 if request.htmx:
                     return render(request, 'partials/bider_list.html', context)
 
@@ -300,3 +330,33 @@ class BiddingDetailView(LoginRequiredMixin, View):
             messages.error(
                 request, "Bid session over, you can no longer place bid")
             return redirect('auth:bid', furniture_id)
+
+
+class BidWinnerView(LoginRequiredMixin, View):
+    def get(self, request, furniture_id):
+        try:
+            furniture = Furniture.objects.get(furniture_id=furniture_id)
+            # if furniture has no buyer
+            if not furniture.sold_to:
+                biddings = Bidding.objects.filter(furniture=furniture).exists()
+                # check if furniture has any bidding list
+                if biddings:
+                    declare_winner(furniture_id)
+                    furniture = Furniture.objects.get(
+                        furniture_id=furniture_id)
+                    return render(request, 'backend/auction/winner.html', {'object': furniture})
+                else:
+                    messages.error(
+                        request, 'No one bided for it so no winner!')
+                    return redirect('auth:closed')
+            return render(request, 'backend/auction/winner.html', {'object': furniture})
+        except Furniture.DoesNotExist:
+            messages.error(request, 'Failed to get furniture!')
+            return redirect('auth:closed')
+
+class ManageAuctionWinnersView(LoginRequiredMixin, ListView):
+    template_name = "backend/auction/winners.html"
+
+    def get_queryset(self):
+
+        return Bidding.objects.all()

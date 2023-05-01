@@ -61,13 +61,27 @@
 									</div>
 								</div>
 								<div class="card-footer border-top-blue-grey border-top-lighten-5 text-muted">
-									<a href="{% url 'auth:bid' object.pk %}" class="btn btn-outline-teal float-xs-right">Click to View Winner</a>
+									<a href="{% url 'auth:winner' object.pk %}" class="btn btn-outline-teal float-xs-right">Click to View Winner</a>
 									</span>
 								</div>
 							</div>
 						</div>
 
 						{% endfor %}
+						{% else %}
+					<div class="col-xl-6 col-md-4 col-sm-12">
+						<div class="card" style="height: 151px;">
+							<div class="card-header">
+								<h4 class="card-title text-xs-center">No closed auction</h4>
+							</div>
+							<div class="card-body collapse in">
+								<div class="card-block text-xs-center">
+									<p>When any auction closes it will be displayed here! </p>
+									<div class="tag tag-pill tag-primary">check later</div>
+								</div>
+							</div>
+						</div>
+					</div>
 					{% endif %}
 				</div>
 			</section>

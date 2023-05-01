@@ -100,6 +100,9 @@ class Furniture(models.Model):
     start_date_and_time = models.DateTimeField(null=True)
     end_date_and_time = models.DateTimeField(null=True)
     is_sold = models.BooleanField(default=False)
+    sold_price = models.FloatField(blank=True, null=True)
+    sold_to = models.ForeignKey(
+        User, on_delete=models.CASCADE, blank=True, null=True)
     image = models.ImageField(null=True, blank=True, upload_to='uploads/')
 
     def __str__(self):
