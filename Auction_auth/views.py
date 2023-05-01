@@ -354,9 +354,27 @@ class BidWinnerView(LoginRequiredMixin, View):
             messages.error(request, 'Failed to get furniture!')
             return redirect('auth:closed')
 
+
 class ManageAuctionWinnersView(LoginRequiredMixin, ListView):
     template_name = "backend/auction/winners.html"
 
     def get_queryset(self):
 
         return Bidding.objects.all()
+
+
+class UpdateProfileView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+    model = User
+    template_name = "backend/profile/profile.html"
+    form_class = BiddersUpdateForm
+    success_message = 'Account Updated Successfully!'
+
+    def get_context_data(self, **kwargs):
+        if self.request.user.is_staff:
+            form_class = UpdateAdminForm
+        context = super().get_context_data(**kwargs)
+        context["type"] = 'Update'
+        return context
+
+    # def get_success_url(self):
+    #     return reverse("auth:profile", f'{self.request.user.pk}')

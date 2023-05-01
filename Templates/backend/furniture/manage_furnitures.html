@@ -62,6 +62,8 @@
                                         <th>#</th>
                                         <th>Image</th>
                                         <th>Furniture Name</th>
+                                        <th>has Winner</th>
+                                        <th>is Sold</th>
                                         <th>Start Price</th>
                                         <th>Start date & time</th>
                                         <th>End date & time</th>
@@ -78,6 +80,8 @@
                                         <th scope="row">{{ forloop.counter}}</th>
                                         <td><a href="{% url 'auth:update_furniture' object.pk %}"><img src="{{object.image.url}}" width="35" alt=""></a></td>
                                         <td>{{ object.furniture_name }}</td>
+                                        <td><div class="tag tag-pill tag-primary">{% if object.sold_to %}True {% else %}False{% endif %}</div></td>
+                                        <td><div class="tag tag-pill tag-primary">{{ object.is_sold }}</div></td>
                                         <td>{{ object.start_price }}</td>
                                         <td>{{ object.start_date_and_time }}</td>
                                         <td>{{ object.end_date_and_time }}</td>

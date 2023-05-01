@@ -41,6 +41,9 @@
 					</li>
 				</ul>
 				<ul class="nav navbar-nav float-xs-right">
+
+					{% comment %}
+
 					<li class="dropdown dropdown-notification nav-item">
 						<a href="#" data-toggle="dropdown" class="nav-link nav-link-label"
 							><i class="ficon icon-bell4"></i
@@ -109,17 +112,18 @@
 
 						</ul>
 					</li>
+					{% endcomment %}
 
 					<li class="dropdown dropdown-user nav-item">
 						<a
-							href="#"
+
 							data-toggle="dropdown"
 							class="dropdown-toggle nav-link dropdown-user-link"
 							><span class="avatar avatar-online"
 								><img
-									src="{% static 'backend/app-assets/images/portrait/small/avatar-s-1.png' %}"
+									src="{{ request.user.picture.url }}"
 									alt="avatar" /><i></i></span
-							><span class="user-name">John Doe</span></a
+							><span class="user-name">{{request.user.name}}</span></a
 						>
 						<div class="dropdown-menu dropdown-menu-right">
 							<a href="#" class="dropdown-item"

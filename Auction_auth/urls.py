@@ -43,4 +43,7 @@ urlpatterns = [
          BidWinnerView.as_view(), name='winner'),
     path('auth/winners_list', ManageAuctionWinnersView.as_view(), name='winners_list'),
     path('auth/bid/<str:furniture_id>', BiddingDetailView.as_view(), name='bid'),
+
+    path('auth/profile/<str:pk>',
+         UpdateProfileView.as_view(), name='profile'),
 ]

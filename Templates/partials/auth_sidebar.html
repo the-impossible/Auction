@@ -48,7 +48,7 @@
 
         <li class=" navigation-header"><span data-i18n="nav.category.support">Account</span><i data-toggle="tooltip" data-placement="right" data-original-title="Account" class="icon-ellipsis icon-ellipsis"></i>
         </li>
-        <li class=" nav-item"><a href="https://github.com/pixinvent/robust-free-bootstrap-admin-template/issues"><i class="icon-user-tie"></i><span data-i18n="nav.support_raise_support.main" class="menu-title">Profile</span></a>
+        <li class=" nav-item"><a href="{% url 'auth:profile' request.user.pk %}"><i class="icon-user-tie"></i><span data-i18n="nav.support_raise_support.main" class="menu-title">Profile</span></a>
         </li>
 
         <li class="nav-item">
