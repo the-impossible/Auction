@@ -69,7 +69,7 @@
                                     Won by: {{ object.sold_to.name }}.
                                   </div>
 
-                                  {% if request.user.user_id == object.sold_to.user_id %}
+                                  {% if request.user.user_id == object.sold_to.user_id and not object.is_sold %}
 
                                   <a class="btn btn-success mt-3" href="{% url 'auth:make_payment' object.furniture_id %}"><i class="icon-cash"></i> Make Payment</a>
                                   {% endif %}

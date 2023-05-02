@@ -81,9 +81,28 @@
                                         <td>{{ object.sold_price }}</td>
 
                                         {% if request.user.is_staff %}
-                                        <td><a href="" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{forloop.counter}}" style="cursor: pointer;"> <i class="icon-ios-trash"></i>Delete</a></td>
+
+
+                                          {% if request.user.user_id == object.sold_to.user_id and not object.is_sold %}
+                                          <td>
+                                            <a href="{% url 'auth:make_payment' object.furniture_id %}" class="btn btn-success" style="cursor: pointer;"> <i class="icon-cash"></i> Pay &nbsp;&nbsp;&nbsp;</a>
+                                          </td>
+                                          {% else %}
+                                          <td>
+                                            <a href="" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{forloop.counter}}" style="cursor: pointer;"> <i class="icon-ios-trash"></i>Delete</a>
+                                          </td>
+
+                                          {% endif %}
+
                                         {% elif request.user.user_id == object.sold_to.user_id and not object.is_sold %}
-                                        <td><a href="{% url 'auth:make_payment' object.furniture_id %}" class="btn btn-success" style="cursor: pointer;"> <i class="icon-cash"></i> Make Payment</a></td>
+                                          <td>
+                                            <a href="{% url 'auth:make_payment' object.furniture_id %}" class="btn btn-success" style="cursor: pointer;"> <i class="icon-cash"></i> Pay &nbsp;&nbsp;&nbsp;</a>
+                                          </td>
+                                          {% else %}
+                                          <td>
+                                            <a href="{% url 'auth:winner' object.furniture_id %}" class="btn btn-success" style="cursor: pointer;"> <i class="icon-eye"></i> View &nbsp;&nbsp;&nbsp;</a>
+                                          </td>
+
                                         {% endif %}
 
                                     </tr>
@@ -91,13 +110,13 @@
                                         <div class="modal-dialog" id="uploadDialog" role="document">
                                           <div class="modal-content">
                                             <div class="modal-header">
-                                              <h5 class="modal-title">Delete winning Record for {{object.bider.name}}</h5>
+                                              <h5 class="modal-title">Delete winning Record for {{object.sold_to.name}}</h5>
                                               <button type="button" class="close btn btn-secondary" data-dismiss="modal"><span>×</span>
                                               </button>
                                             </div>
                                             <form method="post" action="{% url 'auth:delete_win' object.pk %}">
                                               <div class="modal-body">
-                                                <p>Are you sure you want to delete {{object.bider.name}} record for winning the bid on <code> {{ object.furniture.furniture_name }} </code>?</p>
+                                                <p>Are you sure you want to delete {{object.sold_to.name}} record for winning the bid on <code> {{ object.furniture_name }} </code>?</p>
                                                 <p> <b>NB:</b> This process is non-reversal</p>
                                                 {% csrf_token %}
                                               </div>

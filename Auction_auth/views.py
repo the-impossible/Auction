@@ -431,6 +431,9 @@ class MakePaymentView(View, LoginRequiredMixin):
                 description=f'Payment for {obj.furniture_name}',
             )
 
+            obj.is_sold = True
+            obj.save()
+
             messages.success(
                 request, ('Product will be delivered to your address!, kindly make sure you update your profile'))
             return redirect('auth:dashboard')
