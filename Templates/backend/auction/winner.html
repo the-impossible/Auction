@@ -68,6 +68,12 @@
                                     <h4 class="media-heading">Sold price: {{ object.sold_price }}</h4>
                                     Won by: {{ object.sold_to.name }}.
                                   </div>
+
+                                  {% if request.user.user_id == object.sold_to.user_id %}
+
+                                  <a class="btn btn-success mt-3" href="{% url 'auth:make_payment' object.furniture_id %}"><i class="icon-cash"></i> Make Payment</a>
+                                  {% endif %}
+
                                 </div>
                               </div>
                               <hr>

@@ -12,8 +12,9 @@ from django.utils import timezone
 # Create your views here.
 from Auction_auth.forms import *
 from Auction_auth.models import *
-# import stripe
+import stripe
 # stripe.api_key = "sk_test_51L5Xs6GCAqCizi1RncjTC84yc0J7jaecLFB5gj07ZDNWCREFyEylsunXTltlQleL3lWzEcLsqIFCInvn6wGYu2Xa00cIHRZjMz"
+stripe.api_key = "sk_test_51N3J38JRcgaZzMZKtuOJjMLXMMpKNqcKfdaKDtlPfYLHIpKNnMAVg1gxyHf15ImRFZyVficIsw4JhI9jQs5lOpyP00Sr3TtdN5"
 
 
 class HomePageView(TemplateView):
@@ -400,3 +401,41 @@ class DeleteWinView(SuccessMessageMixin, LoginRequiredMixin, View):
         furniture.save()
         messages.success(self.request, 'Winner has been deleted Successfully!')
         return redirect('auth:winners_list')
+
+
+class MakePaymentView(View, LoginRequiredMixin):
+    def get(self, request, furniture_id):
+        obj = Furniture.objects.get(furniture_id=furniture_id)
+        context = {
+            'object': obj,
+        }
+
+        return render(request, 'backend/payment/make_payment.html', context)
+
+    def post(self, request, furniture_id):
+
+        obj = Furniture.objects.get(furniture_id=furniture_id)
+        source = request.POST.get('stripeToken')
+
+        try:
+            customer = stripe.Customer.create(
+                name=f'{request.user.name}',
+                description=f'{obj.furniture_name}',
+                source=source
+            )
+
+            charge = stripe.Charge.create(
+                customer=customer,
+                amount=round(obj.sold_price) * 100,
+                currency='NGN',
+                description=f'Payment for {obj.furniture_name}',
+            )
+
+            messages.success(
+                request, ('Product will be delivered to your address!, kindly make sure you update your profile'))
+            return redirect('auth:dashboard')
+
+        except stripe.error.CardError:
+            messages.error(request, ('Your card has insufficient funds!!'))
+
+        return redirect('auth:make_payment', furniture_id)

@@ -63,9 +63,7 @@
                                         <th>Furniture</th>
                                         <th>Furniture Title</th>
                                         <th>Amount</th>
-                                        {% if request.user.is_staff %}
                                         <th>Action</th>
-                                        {% endif %}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -84,6 +82,8 @@
 
                                         {% if request.user.is_staff %}
                                         <td><a href="" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{forloop.counter}}" style="cursor: pointer;"> <i class="icon-ios-trash"></i>Delete</a></td>
+                                        {% elif request.user.user_id == object.sold_to.user_id and not object.is_sold %}
+                                        <td><a href="{% url 'auth:make_payment' object.furniture_id %}" class="btn btn-success" style="cursor: pointer;"> <i class="icon-cash"></i> Make Payment</a></td>
                                         {% endif %}
 
                                     </tr>

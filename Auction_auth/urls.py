@@ -48,4 +48,6 @@ urlpatterns = [
 
     path('auth/profile/<str:pk>',
          UpdateProfileView.as_view(), name='profile'),
+    path('auth/make_payment/<str:furniture_id>',
+         MakePaymentView.as_view(), name='make_payment'),
 ]
