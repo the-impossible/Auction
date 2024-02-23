@@ -37,7 +37,7 @@
 			<section id="basic-examples">
 				<div class="row">
 					<div class="col-xs-12 mt-1 mb-3">
-						<p>The furnitures below are furniture that the auction process is completed.</p>
+						<p>The products below are product that the auction process is completed.</p>
 						<hr>
 					</div>
 				</div>
@@ -55,7 +55,7 @@
 										<img class="card-img-top img-fluid" src="{{ object.image.url }}" alt="Card image cap">
 									</div>
 									<div class="card-block">
-										<h4 class="card-title">{{ object.furniture_name|truncatechars:21 }}</h4>
+										<h4 class="card-title">{{ object.product_name|truncatechars:21 }}</h4>
 										<p class="card-text">Started: {{ object.start_date_and_time }}</p>
 										<p class="card-text">Ended: {{ object.end_date_and_time }}</p>
 									</div>

@@ -19,11 +19,11 @@ class UsersAdmin(UserAdmin):
 
 
 class FurnitureAdmin(UserAdmin):
-    list_display = ('furniture_name', 'start_price', 'start_date_and_time', 'end_date_and_time', 'image',
-                    'furniture_desc')
-    search_fields = ('furniture_name', 'start_price',
-                     'furniture_desc', 'start_date_and_time', 'end_date_and_time')
-    ordering = ('furniture_name',)
+    list_display = ('product_name', 'start_price', 'start_date_and_time', 'end_date_and_time', 'image',
+                    'product_desc')
+    search_fields = ('product_name', 'start_price',
+                     'product_desc', 'start_date_and_time', 'end_date_and_time')
+    ordering = ('product_name',)
     readonly_fields = ('start_date_and_time', 'end_date_and_time', 'created')
 
     filter_horizontal = ()

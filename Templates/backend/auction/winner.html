@@ -51,13 +51,13 @@
                                 <img class="img-fluid" src="{{ object.image.url }}" alt="Timeline Image 1">
                               </div>
                               <div class="col-lg-8 col-xs-12">
-                              <h3 class="my-1">{{ object.furniture_name }}</h3>
+                              <h3 class="my-1">{{ object.product_name }}</h3>
                               <p class="lead"><b>Starting price:</b> {{ object.start_price }}</p>
                               <b>Started: {{ object.start_date_and_time }}</b>
                               <p></p>
                               <b>Ended: {{ object.end_date_and_time }}</b>
                               <hr>
-                              <p>{{ object.furniture_desc }}</p>
+                              <p>{{ object.product_desc }}</p>
                               <hr>
                               <div class="media-list">
                                 <div class="media">
@@ -71,7 +71,7 @@
 
                                   {% if request.user.user_id == object.sold_to.user_id and not object.is_sold %}
 
-                                  <a class="btn btn-success mt-3" href="{% url 'auth:make_payment' object.furniture_id %}"><i class="icon-cash"></i> Make Payment</a>
+                                  <a class="btn btn-success mt-3" href="{% url 'auth:make_payment' object.product_id %}"><i class="icon-cash"></i> Make Payment</a>
                                   {% endif %}
 
                                 </div>

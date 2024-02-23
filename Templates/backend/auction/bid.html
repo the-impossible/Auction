@@ -36,7 +36,7 @@
           <section id="timeline" class="timeline-left timeline-wrapper">
             <div class="card border-grey border-lighten-2">
                 <div class="card-header">
-                    <h4 class="card-title">{{ object.furniture_name}} </h4>
+                    <h4 class="card-title">{{ object.product_name}} </h4>
                     <p class="card-subtitle text-muted pt-1">
                         <span class="font-small-3 text-danger ending">{{ object.end_date_and_time|date:"D, d M Y H:i:s" }}</span>
                     </p>
@@ -81,13 +81,13 @@
 
                             </div>
                             <div class="col-lg-8 col-xs-12">
-                              <h3 class="my-1">{{ object.furniture_name }}</h3>
+                              <h3 class="my-1">{{ object.product_name }}</h3>
                               <p class="lead"><b>Starting price:</b> {{ object.start_price }}</p>
                               <b>Started: {{ object.start_date_and_time }}</b>
                               <p></p>
                               <b>Ending: <span class="lead ending text-danger font-weight-bold">{{ object.end_date_and_time|date:"D, d M Y H:i:s" }}</span></b>
                               <p></p>
-                              <p>{{ object.furniture_desc }}</p>
+                              <p>{{ object.product_desc }}</p>
                               <p></p>
                               <hr>
                               <h3 class="my-1">Biders List</h3>
@@ -106,7 +106,7 @@
                                     {% if is_over %}
                                     <tbody>
                                     {% else %}
-                                    <tbody hx-get="{% url 'auth:bid' object.furniture_id %}" hx-trigger="every 2s" hx-swap="innerHTML">
+                                    <tbody hx-get="{% url 'auth:bid' object.product_id %}" hx-trigger="every 2s" hx-swap="innerHTML">
                                     {% endif %}
                                       {% include 'partials/bider_list.html' %}
                                     </tbody>

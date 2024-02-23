@@ -95,11 +95,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Furniture(models.Model):
-    furniture_id = models.UUIDField(
+    product_id = models.UUIDField(
         default=uuid.uuid4, primary_key=True, unique=True, editable=False)
-    furniture_name = models.CharField(max_length=100)
+    product_name = models.CharField(max_length=100)
     start_price = models.FloatField()
-    furniture_desc = models.TextField()
+    product_desc = models.TextField()
     created = models.DateTimeField(
         verbose_name='date_created', auto_now_add=True)
     start_date_and_time = models.DateTimeField(null=True)
@@ -111,7 +111,7 @@ class Furniture(models.Model):
     image = models.ImageField(null=True, blank=True, upload_to='uploads/')
 
     def __str__(self):
-        return self.furniture_name
+        return self.product_name
 
     class Meta:
         db_table = 'Furniture'
@@ -121,7 +121,7 @@ class Furniture(models.Model):
 class Bidding(models.Model):
     bid_id = models.UUIDField(
         default=uuid.uuid4, primary_key=True, unique=True, editable=False)
-    furniture = models.ForeignKey(
+    product = models.ForeignKey(
         Furniture, on_delete=models.CASCADE, blank=True, null=True)
     bider = models.ForeignKey(
         User, on_delete=models.CASCADE, blank=True, null=True)
@@ -130,7 +130,7 @@ class Bidding(models.Model):
         verbose_name='bid_date', auto_now_add=True)
 
     def __str__(self):
-        return f"{self.bider} | {self.furniture.furniture_name }"
+        return f"{self.bider} | {self.product }"
 
     class Meta:
         db_table = 'Bidding'

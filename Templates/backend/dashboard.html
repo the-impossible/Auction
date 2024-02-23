@@ -28,7 +28,7 @@
                                 <div class="media">
                                     <div class="media-body text-xs-left">
                                         <h3 class="pink">{{furniture}}</h3>
-                                        <span>All Furnitures</span>
+                                        <span>All Product</span>
                                     </div>
                                     <div class="media-right media-middle">
                                         <i class="icon-bag2 pink font-large-2 float-xs-right"></i>
@@ -47,7 +47,7 @@
                                         <h3 class="teal">
                                         {% if request.user.is_staff %} {{biders}} {% else %} {{won}}
                                         {% endif %}</h3>
-                                        <span>{% if request.user.is_staff %} All Bidders{{biders}} {% else %}  auction won {% endif %} </span>
+                                        <span>{% if request.user.is_staff %} All Bidders{% else %}  auction won {% endif %} </span>
                                     </div>
                                     <div class="media-right media-middle">
                                         <i class="icon-user1 teal font-large-2 float-xs-right"></i>

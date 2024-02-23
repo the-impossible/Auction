@@ -29,7 +29,7 @@ class DashboardPageView(LoginRequiredMixin, TemplateView):
         context["furniture"] = Furniture.objects.all().count()
         context["biders"] = User.objects.filter(is_staff=False).count()
         context["on_going"] = len(
-            [on_going for on_going in Furniture.objects.all() if timezone.now() < on_going.end_date_and_time])
+            [on_going for on_going in Furniture.objects.all() if timezone.now() >= on_going.start_date_and_time and timezone.now() < on_going.end_date_and_time])
         context["closed"] = len(
             [on_going for on_going in Furniture.objects.all() if timezone.now() > on_going.end_date_and_time])
         if not self.request.user.is_staff:
@@ -136,7 +136,7 @@ class CreateFurniturePageView(SuccessMessageMixin, LoginRequiredMixin, CreateVie
     model = Furniture
     form_class = FurnitureForm
     template_name = "backend/furniture/create_update_furniture.html"
-    success_message = "Furniture uploaded successfully! "
+    success_message = "Product uploaded successfully! "
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -144,7 +144,7 @@ class CreateFurniturePageView(SuccessMessageMixin, LoginRequiredMixin, CreateVie
         return context
 
     def get_success_url(self):
-        return reverse("auth:create_furniture")
+        return reverse("auth:create_product")
 
 
 class ManageFurniturePageView(LoginRequiredMixin, ListView):
@@ -166,13 +166,13 @@ class EditFurnitureView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse("auth:manage_furniture")
+        return reverse("auth:manage_product")
 
 
 class DeleteFurnitureView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Furniture
-    success_message = 'Furniture Deleted Successfully!'
-    success_url = reverse_lazy('auth:manage_furniture')
+    success_message = 'Product Deleted Successfully!'
+    success_url = reverse_lazy('auth:manage_product')
 
 
 class CreateAdminPageView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
@@ -224,31 +224,31 @@ class DeleteAdminView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('auth:manage_admin')
 
 
-def is_over(furniture_id):
+def is_over(product_id):
     now = timezone.now()
     end_date_and_time = Furniture.objects.get(
-        furniture_id=furniture_id).end_date_and_time
+        product_id=product_id).end_date_and_time
     if now > end_date_and_time:
         return True
     return False
 
 
-def declare_winner(furniture_id):
+def declare_winner(product_id):
     try:
-        furniture = Furniture.objects.get(furniture_id=furniture_id)
+        product = Furniture.objects.get(product_id=product_id)
         price = 0
         winner = ''
 
-        all_bids = Bidding.objects.filter(furniture=furniture)
+        all_bids = Bidding.objects.filter(product=product)
 
         for bid in all_bids:
             if bid.bid_price > price:
                 winner = bid.bider
                 price = bid.bid_price
 
-        furniture.sold_to = winner
-        furniture.sold_price = price
-        furniture.save()
+        product.sold_to = winner
+        product.sold_price = price
+        product.save()
         return True
     except Furniture.DoesNotExist:
         return False
@@ -260,7 +260,7 @@ class OnGoingAuctionView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         all_furniture = Furniture.objects.all().order_by('-created')
         now = timezone.now()
-        return [on_going for on_going in all_furniture if now < on_going.end_date_and_time]
+        return [on_going for on_going in all_furniture if now >= on_going.start_date_and_time and now < on_going.end_date_and_time]
 
 
 class ClosedAuctionView(LoginRequiredMixin, ListView):
@@ -273,31 +273,31 @@ class ClosedAuctionView(LoginRequiredMixin, ListView):
 
 
 class BiddingDetailView(LoginRequiredMixin, View):
-    def get(self, request, furniture_id):
+    def get(self, request, product_id):
 
         context = {
-            "form": BiddingForm(furniture_id=furniture_id),
+            "form": BiddingForm(product_id=product_id),
             "biders": Bidding.objects.filter(
-                furniture=Furniture.objects.get(furniture_id=furniture_id)).order_by('-bid_date'),
+                product=Furniture.objects.get(product_id=product_id)).order_by('-bid_date'),
         }
 
         try:
-            is_completed = is_over(furniture_id)
+            is_completed = is_over(product_id)
 
-            furniture = Furniture.objects.get(furniture_id=furniture_id)
+            furniture = Furniture.objects.get(product_id=product_id)
             context["object"] = furniture
             context["is_over"] = is_completed
 
             if is_completed:
                 # Award winner
-                declare_winner(furniture_id)
+                declare_winner(product_id)
 
                 if request.htmx:
 
                     # End polling
-                    return HttpResponse(status=200, headers={'HX-Redirect': reverse('auth:winner', args=[furniture_id])})
+                    return HttpResponse(status=200, headers={'HX-Redirect': reverse('auth:winner', args=[product_id])})
 
-                return redirect('auth:winner', furniture_id)
+                return redirect('auth:winner', product_id)
             else:
                 if request.htmx:
                     return render(request, 'partials/bider_list.html', context)
@@ -308,15 +308,15 @@ class BiddingDetailView(LoginRequiredMixin, View):
             messages.error(request, "Unable to get furniture!")
         return redirect('auth:on_going')
 
-    def post(self, request, furniture_id):
+    def post(self, request, product_id):
         form = BiddingForm(
-            request.POST, furniture_id=furniture_id)
+            request.POST, product_id=product_id)
         context = {
             "biders": Bidding.objects.filter(
-                furniture=Furniture.objects.get(furniture_id=furniture_id)).order_by('-bid_date'),
+                product=Furniture.objects.get(product_id=product_id)).order_by('-bid_date'),
         }
-        furniture = Furniture.objects.get(furniture_id=furniture_id)
-        is_completed = is_over(furniture_id)
+        furniture = Furniture.objects.get(product_id=product_id)
+        is_completed = is_over(product_id)
 
         context["object"] = furniture
         context["is_over"] = is_completed
@@ -326,13 +326,13 @@ class BiddingDetailView(LoginRequiredMixin, View):
             if form.is_valid():
 
                 form = form.save(commit=False)
-                form.furniture = Furniture.objects.get(
-                    furniture_id=furniture_id)
+                form.product = Furniture.objects.get(
+                    product_id=product_id)
                 form.bider = request.user
                 form.save()
 
                 messages.success(request, 'You have successfully placed a bid')
-                return redirect('auth:bid', furniture_id)
+                return redirect('auth:bid', product_id)
             else:
                 messages.error(request, form.errors.as_text())
 
@@ -342,21 +342,21 @@ class BiddingDetailView(LoginRequiredMixin, View):
         else:
             messages.error(
                 request, "Bid session over, you can no longer place bid")
-            return redirect('auth:bid', furniture_id)
+            return redirect('auth:bid', product_id)
 
 
 class BidWinnerView(LoginRequiredMixin, View):
-    def get(self, request, furniture_id):
+    def get(self, request, product_id):
         try:
-            furniture = Furniture.objects.get(furniture_id=furniture_id)
+            furniture = Furniture.objects.get(product_id=product_id)
             # if furniture has no buyer
             if not furniture.sold_to:
-                biddings = Bidding.objects.filter(furniture=furniture).exists()
+                biddings = Bidding.objects.filter(product=furniture).exists()
                 # check if furniture has any bidding list
                 if biddings:
-                    declare_winner(furniture_id)
-                    furniture = Furniture.objects.get(
-                        furniture_id=furniture_id)
+                    declare_winner(product_id)
+                    product = Furniture.objects.get(
+                        product_id=product_id)
                     return render(request, 'backend/auction/winner.html', {'object': furniture})
                 else:
                     messages.error(
@@ -393,8 +393,8 @@ class UpdateProfileView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 class DeleteWinView(SuccessMessageMixin, LoginRequiredMixin, View):
 
     def post(self, *args, **kwargs):
-        furniture_id = self.kwargs['pk']
-        furniture = Furniture.objects.get(furniture_id=furniture_id)
+        product_id = self.kwargs['pk']
+        furniture = Furniture.objects.get(product_id=product_id)
         furniture.sold_to = None
         furniture.sold_price = None
 
@@ -404,23 +404,23 @@ class DeleteWinView(SuccessMessageMixin, LoginRequiredMixin, View):
 
 
 class MakePaymentView(View, LoginRequiredMixin):
-    def get(self, request, furniture_id):
-        obj = Furniture.objects.get(furniture_id=furniture_id)
+    def get(self, request, product_id):
+        obj = Furniture.objects.get(product_id=product_id)
         context = {
             'object': obj,
         }
 
         return render(request, 'backend/payment/make_payment.html', context)
 
-    def post(self, request, furniture_id):
+    def post(self, request, product_id):
 
-        obj = Furniture.objects.get(furniture_id=furniture_id)
+        obj = Furniture.objects.get(product_id=product_id)
         source = request.POST.get('stripeToken')
 
         try:
             customer = stripe.Customer.create(
                 name=f'{request.user.name}',
-                description=f'{obj.furniture_name}',
+                description=f'{obj.product_name}',
                 source=source
             )
 
@@ -428,7 +428,7 @@ class MakePaymentView(View, LoginRequiredMixin):
                 customer=customer,
                 amount=round(obj.sold_price) * 100,
                 currency='NGN',
-                description=f'Payment for {obj.furniture_name}',
+                description=f'Payment for {obj.product_name}',
             )
 
             obj.is_sold = True
@@ -441,4 +441,4 @@ class MakePaymentView(View, LoginRequiredMixin):
         except stripe.error.CardError:
             messages.error(request, ('Your card has insufficient funds!!'))
 
-        return redirect('auth:make_payment', furniture_id)
+        return redirect('auth:make_payment', product_id)

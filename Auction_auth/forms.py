@@ -1,5 +1,6 @@
 from django import forms
 from Auction_auth.models import *
+from django.utils import timezone
 
 
 class AccountCreationForm(forms.ModelForm):
@@ -158,7 +159,7 @@ class BiddersUpdateForm(forms.ModelForm):
 
 class FurnitureForm(forms.ModelForm):
 
-    furniture_name = forms.CharField(help_text='Enter furniture_name', widget=forms.TextInput(
+    product_name = forms.CharField(help_text='Enter product_name', widget=forms.TextInput(
         attrs={
             'class': 'form-control form-control-lg input-lg',
             'type': 'text',
@@ -172,7 +173,7 @@ class FurnitureForm(forms.ModelForm):
         }
     ))
 
-    furniture_desc = forms.CharField(help_text='Enter Furniture Description', widget=forms.Textarea(
+    product_desc = forms.CharField(help_text='Enter product Description', widget=forms.Textarea(
         attrs={
             'class': 'form-control form-control-lg input-lg',
             'rows': 3,
@@ -201,9 +202,27 @@ class FurnitureForm(forms.ModelForm):
         }
     ))
 
+    def clean(self):
+        cleaned_data = super().clean()
+
+        start_date_and_time = cleaned_data.get('start_date_and_time')
+        end_date_and_time = cleaned_data.get('end_date_and_time')
+
+        if timezone.now() > start_date_and_time:
+            self.add_error('start_date_and_time', 'Start Date cannot be less than current date!')
+            raise forms.ValidationError(
+                'Start Date cannot be less than current date!')
+
+        if start_date_and_time > end_date_and_time:
+            self.add_error('end_date_and_time', 'End Date cannot be less than Start date!')
+            raise forms.ValidationError(
+                'End Date cannot be less than Start date!')
+
+        return cleaned_data
+
     class Meta:
         model = Furniture
-        fields = ('furniture_name', 'start_price', 'furniture_desc',
+        fields = ('product_name', 'start_price', 'product_desc',
                   'image', 'start_date_and_time', 'end_date_and_time')
 
 
@@ -217,7 +236,7 @@ class EditFurnitureForm(FurnitureForm, forms.ModelForm):
         }
     ))
 
-    is_sold = forms.BooleanField(required=False, help_text='Is the furniture sold?', widget=forms.CheckboxInput(
+    is_sold = forms.BooleanField(required=False, help_text='Is the Product sold?', widget=forms.CheckboxInput(
         attrs={
             'class': 'form-control',
             'type': 'checkbox',
@@ -226,7 +245,7 @@ class EditFurnitureForm(FurnitureForm, forms.ModelForm):
 
     class Meta:
         model = Furniture
-        fields = ('furniture_name', 'start_price', 'furniture_desc',
+        fields = ('product_name', 'start_price', 'product_desc',
                   'image', 'start_date_and_time', 'end_date_and_time', 'is_sold')
 
 
@@ -284,7 +303,7 @@ class UpdateAdminForm(forms.ModelForm):
 class BiddingForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        self.furniture_id = kwargs.pop('furniture_id', 'fail')
+        self.product_id = kwargs.pop('product_id', 'fail')
         super(BiddingForm, self).__init__(*args, **kwargs)
         # self.fields['stud_id'].queryset=StudentProfile.objects.filter(dept_id=self.dept_id)
 
@@ -302,7 +321,7 @@ class BiddingForm(forms.ModelForm):
     def clean_bid_price(self, *args, **kwargs):
         bid_price = self.cleaned_data.get('bid_price')
         start_price = Furniture.objects.get(
-            furniture_id=self.furniture_id).start_price
+            product_id=self.product_id).start_price
 
         if float(bid_price) < start_price:
 
